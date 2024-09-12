@@ -4,6 +4,7 @@ const version = "1.0";
 
 ASSETS = {
     image: {
+        "title": "img/title.png",
         "green": "img/green.png",
         "ground": "img/ground.png",
         "water": "img/water.png",
@@ -14,6 +15,7 @@ ASSETS = {
         "fire2": "img/fire2.png",
         "fire3": "img/fire3.png",
         "fire4": "img/fire4.png",
+        "fire5": "img/fire5.png",
     },
 };
 
@@ -33,10 +35,10 @@ phina.define('TitleScene', {
         this.backgroundColor = "#ecf0f1";
 
         Label({
-            text: '囲んで消すだけ',
+            text: 'ほとんど考えずにできる',
             x: this.gridX.center(),
             y: this.gridY.span(2),
-            fontSize: 20,
+            fontSize: 25,
             fill: "black",
             fontWeight: 800,
         }).addChildTo(this);
@@ -50,14 +52,14 @@ phina.define('TitleScene', {
             fontWeight: 800,
         }).addChildTo(this);
 
-        const verLabel = Label({
-            x: this.gridX.span(12),
-            y: this.gridY.span(4),
-            fontSize: 18,
-            fill: "black",
-            fontFamily: "monospace",
-        }).addChildTo(this);
-        verLabel.text = "version " + version;
+        // const verLabel = Label({
+        //     x: this.gridX.span(12),
+        //     y: this.gridY.span(4),
+        //     fontSize: 18,
+        //     fill: "black",
+        //     fontFamily: "monospace",
+        // }).addChildTo(this);
+        // verLabel.text = "version " + version;
 
         Demo().addChildTo(this).setPosition(this.gridX.center(), this.gridY.span(8));
 
@@ -438,8 +440,8 @@ phina.define('Block', {
         this.type = TYPE_GROUND;
         this.step = 0;
         const smoke = Sprite("smoke").addChildTo(this).setPosition(0, 0);
-        smoke.alpha = 0.4;
-        smoke.tweener.to({y: -50, alpha: 0, scaleX: 3}, 500).call(() => smoke.remove()).play();
+        smoke.alpha = 0.9;
+        smoke.tweener.to({y: -30, alpha: 0, scaleX: 2}, 500).call(() => smoke.remove()).play();
     },
 
     changeToFGreen: function() {
@@ -460,9 +462,23 @@ phina.define('Block', {
 
         if (this.type === TYPE_FIRE) {
             if (this.step === 0) {
-                this.setImage("fire4");
                 this.step = 1;
             } else if (this.step === 1) {
+                this.setImage("fire4");
+                this.step = 2;
+            } else if (this.step === 2) {
+                this.step = 3;
+            } else if (this.step === 3) {
+                this.setImage("fire3");
+                this.step = 4;
+            } else if (this.step === 4) {
+                this.step = 5;
+            } else if (this.step === 5) {
+                this.setImage("fire5");
+                this.step = 6;
+            } else if (this.step === 6) {
+                this.step = 7;
+            } else if (this.step === 7) {
                 this.setImage("fire3");
                 this.step = 0;
             }
