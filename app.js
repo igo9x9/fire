@@ -1,6 +1,6 @@
 phina.globalize();
 
-const version = "1.0";
+const version = "0.9";
 
 ASSETS = {
     image: {
