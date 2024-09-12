@@ -9,6 +9,7 @@ ASSETS = {
         "water": "img/water.png",
         "water2": "img/water2.png",
         "water3": "img/water3.png",
+        "smoke": "img/smoke.png",
         "fire1": "img/fire1.png",
         "fire2": "img/fire2.png",
         "fire3": "img/fire3.png",
@@ -436,6 +437,9 @@ phina.define('Block', {
         this.lastType = this.type;
         this.type = TYPE_GROUND;
         this.step = 0;
+        const smoke = Sprite("smoke").addChildTo(this).setPosition(0, 0);
+        smoke.alpha = 0.4;
+        smoke.tweener.to({y: -50, alpha: 0, scaleX: 3}, 500).call(() => smoke.remove()).play();
     },
 
     changeToFGreen: function() {
