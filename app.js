@@ -1,6 +1,6 @@
 phina.globalize();
 
-const version = "0.9";
+const version = "1.0";
 
 ASSETS = {
     image: {
@@ -32,7 +32,7 @@ phina.define('TitleScene', {
         this.backgroundColor = "#ecf0f1";
 
         Label({
-            text: 'ほとんど何も考えずにできる',
+            text: '囲んで消すだけ',
             x: this.gridX.center(),
             y: this.gridY.span(2),
             fontSize: 20,
