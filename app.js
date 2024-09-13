@@ -190,11 +190,11 @@ phina.define("FieldMap", {
 
             let timeout;
             if (fireCount / FIRE_START_COUNT > 0.7) {
-                timeout = 4000;
-            } else if (fireCount / FIRE_START_COUNT > 0.4) {
+                timeout = 3000;
+            } else if (fireCount / FIRE_START_COUNT > 0.3) {
                 timeout = 2500;
             } else {
-                timeout = 1500;
+                timeout = 2000;
             }
 
             if (gameStart === false) {
