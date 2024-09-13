@@ -4,7 +4,6 @@ const version = "1.0";
 
 ASSETS = {
     image: {
-        "title": "img/title.png",
         "green": "img/green.png",
         "ground": "img/ground.png",
         "water": "img/water.png",
@@ -32,25 +31,27 @@ phina.define('TitleScene', {
 
         const self = this;
 
-        this.backgroundColor = "#ecf0f1";
+        this.backgroundColor = "#689F38";
 
-        Label({
-            text: 'ほとんど考えずにできる',
-            x: this.gridX.center(),
-            y: this.gridY.span(2),
-            fontSize: 25,
-            fill: "black",
-            fontWeight: 800,
-        }).addChildTo(this);
+        // Label({
+        //     text: 'ほとんど考えずにできる',
+        //     x: this.gridX.center(),
+        //     y: this.gridY.span(2),
+        //     fontSize: 25,
+        //     fill: "black",
+        //     fontWeight: 800,
+        // }).addChildTo(this);
 
         Label({
             text: '火消しゲーム',
             x: this.gridX.center(),
             y: this.gridY.span(3),
-            fontSize: 70,
-            fill: "black",
+            fontSize:80,
+            fill: "#9EDEFB",
             fontWeight: 800,
-        }).addChildTo(this);
+            strokeWidth: 20,
+            stroke: "black",
+         }).addChildTo(this);
 
         // const verLabel = Label({
         //     x: this.gridX.span(12),
@@ -80,9 +81,11 @@ phina.define('TitleScene', {
                 x: this.gridX.center(),
                 y: this.gridY.span(14),
                 fontSize: 40,
-                fill: "#c23616",
+                fill: "red",
                 fontWeight: 800,
-            }).addChildTo(this);
+                strokeWidth: 5,
+                stroke: "white",
+                }).addChildTo(this);
             }
 
         this.on("pointstart",function() {
