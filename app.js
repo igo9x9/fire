@@ -24,6 +24,9 @@ const TYPE_FIRE = "1";
 const TYPE_WATER = "2";
 const TYPE_GROUND = "3";
 
+const FIRE_START_COUNT = 70;
+let fireCount;
+
 phina.define('TitleScene', {
     superClass: 'DisplayScene',
   
@@ -176,15 +179,37 @@ phina.define("FieldMap", {
         });
 
         // 火をつける。
-        [...Array(70)].map(() => self.putFire());
-        // [...Array(1)].map(() => self.putFire());
+        [...Array(FIRE_START_COUNT)].map(() => self.putFire());
+        fireCount = FIRE_START_COUNT;
         gameStart = true;
         startTime = new Date();
 
-        intervalID = setInterval(() => {
+        function removeFireLoop() {
             self.removeFireRandom();
             self.checkAllBlocks();
-        }, 3000);
+
+            let timeout;
+            if (fireCount / FIRE_START_COUNT > 0.7) {
+                timeout = 4000;
+            } else if (fireCount / FIRE_START_COUNT > 0.4) {
+                timeout = 2500;
+            } else {
+                timeout = 1500;
+            }
+
+            if (gameStart === false) {
+                return;
+            }
+
+            timeoutID = setTimeout(() => {
+                removeFireLoop();
+            }, timeout);
+
+        }
+
+        timeoutID = setTimeout(() => {
+            removeFireLoop();
+        }, 4000);
         
     },
     getBlock: function(x, y) {
@@ -358,7 +383,7 @@ phina.define("FieldMap", {
         // 終了判定
         const fireBlocks = self.getBlocks(TYPE_FIRE);
         if (fireBlocks.length === 0) {
-            clearInterval(intervalID);
+            clearTimeout(timeoutID);
             gameStart = false;
             gameClear();
         }
@@ -440,6 +465,7 @@ phina.define('Block', {
         this.lastType = this.type;
         this.type = TYPE_GROUND;
         this.step = 0;
+        fireCount = fireCount - 1;
         if (isSelf) {
             const smoke1 = Sprite("smoke2").addChildTo(this).setPosition(0, 5);
             smoke1.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke1.remove()).play();
@@ -594,7 +620,7 @@ let gameStart = false;
 let startTime;
 let endTime;
 
-let intervalID;
+let timeoutID;
 
 phina.main(function() {
     App = GameApp({
@@ -812,17 +838,16 @@ phina.define("Demo", {
         }
 
         self.tweener.call(() => {
-            demo1().wait(1500)
-                .call(() => {
+            demo1().wait(1500).call(() => {
+                reset();
+                demo2().wait(1500).call(() => {
                     reset();
-                    demo2().wait(1500).call(() => {
+                    demo3().wait(1500).call(() => {
                         reset();
-                        demo3().wait(1500).call(() => {
-                            reset();
-                        });
-                    });
-                }).setLoop(true);
-        }).play();
+                    }).play();
+                }).play();
+            }).play();
+        }).setLoop(true).play();
 
     },
 });
