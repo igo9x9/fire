@@ -137,12 +137,6 @@ phina.define('GameScene', {
             });
         }
 
-        self.on("pointstart", function() {
-            if (gameStart === false) {
-                self.exit();
-            }
-        });
-        
     },
 
 
@@ -365,7 +359,8 @@ phina.define("FieldMap", {
         const fireBlocks = self.getBlocks(TYPE_FIRE);
         if (fireBlocks.length === 0) {
             clearInterval(intervalID);
-            App.pushScene(ClearScene());
+            gameStart = false;
+            gameClear();
         }
 
 
@@ -528,65 +523,70 @@ phina.define('Block', {
 });
 
 /*
- * クリアシーン
+ * クリア
  */
-phina.define("ClearScene", {
-    superClass: 'DisplayScene',
-    init: function() {
-        this.superInit();
-        var self = this;
+function gameClear() {
 
-        this.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+    var scene = App._scenes[App._sceneIndex];
 
-        time = Math.floor(((new Date()).getTime() - startTime.getTime()) / 100) / 10;
+    time = Math.floor(((new Date()).getTime() - startTime.getTime()) / 100) / 10;
 
+    Label({
+        text: "CLEAR !",
+        fontSize: 100,
+        fontWeight: 800,
+        fill: "white",
+        stroke: "red",
+        strokeWidth: 20,
+    }).addChildTo(scene)
+    .setPosition(-700, scene.gridY.center())
+    .tweener.to({x: scene.gridX.center()}, 400, "easeOutExpo")
+    .wait(500)
+    .to({x: scene.gridX.center() + 800}, 200, "easeOutQuad")
+    .call(function() {
         Label({
-            text: "CLEAR !",
-            fontSize: 100,
+            text: time + " sec",
+            fontSize: 80,
             fontWeight: 800,
             fill: "white",
-            stroke: "red",
+            stroke: "black",
             strokeWidth: 20,
-        }).addChildTo(self)
-        .setPosition(-700, self.gridY.center())
-        .tweener.to({x: self.gridX.center()}, 400, "easeOutExpo")
-        .wait(500)
-        .to({x: self.gridX.center() + 800}, 200, "easeOutQuad")
-        .call(function() {
+        }).addChildTo(scene)
+        .setPosition(scene.gridX.center(), scene.gridY.center());
+
+        const bestTime = window.localStorage.getItem("best");
+        if (!bestTime || bestTime > time) {
             Label({
-                text: time + " sec",
-                fontSize: 80,
+                text: "New record !",
+                fontSize: 60,
                 fontWeight: 800,
                 fill: "white",
-                stroke: "black",
+                stroke: "red",
                 strokeWidth: 20,
-            }).addChildTo(self)
-            .setPosition(self.gridX.center(), self.gridY.center());
-    
-            const bestTime = window.localStorage.getItem("best");
-            if (!bestTime || bestTime > time) {
-                Label({
-                    text: "New record !",
-                    fontSize: 60,
-                    fontWeight: 800,
-                    fill: "white",
-                    stroke: "red",
-                    strokeWidth: 20,
-                }).addChildTo(self)
-                .setPosition(self.gridX.center(), self.gridY.center() - 120);
-                window.localStorage.setItem("best", time);
-            }
+            }).addChildTo(scene)
+            .setPosition(scene.gridX.center(), scene.gridY.center() - 120);
+            window.localStorage.setItem("best", time);
+        }
 
-            self.on("pointstart", function() {
-                gameStart = false;
-                self.exit();
-            });
-                
-        })
-        .play();
+    })
+    .wait(1000)
+    .call(function() {
 
-    },
-});
+        Label({
+            text: "Tap to exit",
+            fontSize: 30,
+            fontWeight: 800,
+            fill: "black",
+        }).addChildTo(scene)
+        .setPosition(scene.gridX.center(), scene.gridY.center() + 100);
+
+        scene.on("pointstart", function() {
+            scene.exit();
+        });
+        
+    })
+    .play();
+}
 
 let gameStart = false;
 let startTime;
