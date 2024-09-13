@@ -10,6 +10,7 @@ ASSETS = {
         "water2": "img/water2.png",
         "water3": "img/water3.png",
         "smoke": "img/smoke.png",
+        "smoke2": "img/smoke2.png",
         "fire1": "img/fire1.png",
         "fire2": "img/fire2.png",
         "fire3": "img/fire3.png",
@@ -47,10 +48,10 @@ phina.define('TitleScene', {
             x: this.gridX.center(),
             y: this.gridY.span(3),
             fontSize:80,
-            fill: "#9EDEFB",
+            fill: "#81D4FA",
             fontWeight: 800,
             strokeWidth: 20,
-            stroke: "black",
+            stroke: "white",
          }).addChildTo(this);
 
         // const verLabel = Label({
@@ -69,7 +70,7 @@ phina.define('TitleScene', {
             x: this.gridX.center(),
             y: this.gridY.span(13),
             fontSize: 30,
-            fill: "black",
+            fill: "white",
             fontWeight: 800,
         }).addChildTo(this);
 
@@ -185,7 +186,7 @@ phina.define("FieldMap", {
         startTime = new Date();
 
         intervalID = setInterval(() => {
-            self.removeFire();
+            self.removeFireRandom();
             self.checkAllBlocks();
         }, 3000);
         
@@ -385,14 +386,14 @@ phina.define("FieldMap", {
 
     },
 
-    removeFire: function() {
+    removeFireRandom: function() {
         const self = this;
         const fireBlocks = self.getBlocks(TYPE_FIRE);
         if (fireBlocks.length === 0) {
             return;
         }
         util.shuffleArray(fireBlocks);
-        fireBlocks[0].changeToGroundFromFire();
+        fireBlocks[0].changeToGroundFromFire(true);
     },
 
 });
@@ -436,15 +437,21 @@ phina.define('Block', {
         this.step = 0;
     },
 
-    changeToGroundFromFire: function() {
+    changeToGroundFromFire: function(isSelf) {
         if (this.type === TYPE_GROUND) return;
         this.setImage("fire2");
         this.lastType = this.type;
         this.type = TYPE_GROUND;
         this.step = 0;
-        const smoke = Sprite("smoke").addChildTo(this).setPosition(0, 0);
-        smoke.alpha = 0.9;
-        smoke.tweener.to({y: -30, alpha: 0, scaleX: 2}, 500).call(() => smoke.remove()).play();
+        if (isSelf) {
+            const smoke = Sprite("smoke2").addChildTo(this).setPosition(0, 0);
+            smoke.alpha = 0.9;
+            smoke.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 1000).call(() => smoke.remove()).play();
+        } else {
+            const smoke = Sprite("smoke").addChildTo(this).setPosition(0, 0);
+            smoke.alpha = 0.9;
+            smoke.tweener.to({y: -30, alpha: 0, scaleX: 2}, 500).call(() => smoke.remove()).play();
+        }
     },
 
     changeToFGreen: function() {
@@ -672,7 +679,7 @@ phina.define("Demo", {
                 })
                 .wait(800).call(() => self.blocks[3][3].changeToWater())
                 .wait(800).call(() => self.blocks[3][3].changeToGreenFromWater())
-                .wait(800).call(() => self.blocks[3][3].changeToWater())
+                .wait(1600).call(() => self.blocks[3][3].changeToWater())
                 .wait(800).call(() => self.blocks[3][3].changeToGreenFromWater());
         }
 
@@ -689,18 +696,18 @@ phina.define("Demo", {
                     self.blocks[3][2].changeToFire();
                 })
                 .wait(600).call(() => self.blocks[1][2].changeToWater())
-                .wait(200).call(() => self.blocks[1][3].changeToWater())
-                .wait(200).call(() => self.blocks[1][4].changeToWater())
-                .wait(200).call(() => self.blocks[2][5].changeToWater())
-                .wait(200).call(() => self.blocks[3][5].changeToWater())
-                .wait(200).call(() => self.blocks[4][5].changeToWater())
-                .wait(200).call(() => self.blocks[5][4].changeToWater())
-                .wait(200).call(() => self.blocks[5][3].changeToWater())
-                .wait(200).call(() => self.blocks[5][2].changeToWater())
-                .wait(200).call(() => self.blocks[4][1].changeToWater())
-                .wait(200).call(() => self.blocks[3][1].changeToWater())
-                .wait(200).call(() => self.blocks[2][1].changeToWater())
-                .wait(200).call(() => self.blocks[3][3].changeToWater())
+                .wait(100).call(() => self.blocks[1][3].changeToWater())
+                .wait(100).call(() => self.blocks[1][4].changeToWater())
+                .wait(100).call(() => self.blocks[2][5].changeToWater())
+                .wait(100).call(() => self.blocks[3][5].changeToWater())
+                .wait(100).call(() => self.blocks[4][5].changeToWater())
+                .wait(100).call(() => self.blocks[5][4].changeToWater())
+                .wait(100).call(() => self.blocks[5][3].changeToWater())
+                .wait(100).call(() => self.blocks[5][2].changeToWater())
+                .wait(100).call(() => self.blocks[4][1].changeToWater())
+                .wait(100).call(() => self.blocks[3][1].changeToWater())
+                .wait(100).call(() => self.blocks[2][1].changeToWater())
+                .wait(1000).call(() => self.blocks[3][3].changeToWater())
                 .wait(600).call(() => {
                     self.blocks[2][2].changeToGroundFromFire();
                     self.blocks[2][3].changeToGroundFromFire();
@@ -753,23 +760,23 @@ phina.define("Demo", {
                 })
                 .wait(600)
                 .call(() => self.blocks[3][2].changeToWater())
-                .wait(600)
+                .wait(400)
                 .call(() => self.blocks[3][2].changeToGreenFromWater())
-                .wait(600)
+                .wait(1000)
                 .call(() => self.blocks[3][4].changeToWater())
-                .wait(600)
+                .wait(400)
                 .call(() => self.blocks[3][4].changeToGreenFromWater())
-                .wait(600)
+                .wait(1000)
                 .call(() => self.blocks[3][2].changeToWater())
-                .wait(600)
+                .wait(400)
                 .call(() => self.blocks[3][2].changeToGreenFromWater())
-                .wait(600)
+                .wait(1000)
                 .call(() => self.blocks[3][4].changeToWater())
-                .wait(600)
+                .wait(400)
                 .call(() => self.blocks[3][4].changeToGreenFromWater())
                 .wait(1200)
-                .call(() => self.blocks[2][2].changeToGroundFromFire())
-                .wait(1200)
+                .call(() => self.blocks[2][2].changeToGroundFromFire(true))
+                .wait(2000)
                 .call(() => self.blocks[3][2].changeToWater())
                 .wait(300)
                 .call(() => self.blocks[2][2].changeToWater())
@@ -793,14 +800,14 @@ phina.define("Demo", {
         }
 
         self.tweener.call(() => {
-            demo1().wait(1000)
+            demo1().wait(1500)
                 .call(() => {
                     reset();
-                    demo2().wait(1000).call(() => {
+                    demo2().wait(1500).call(() => {
                         reset();
-                        demo3().wait(1000).call(() => {
+                        demo3().wait(1500).call(() => {
                             reset();
-                            demo4().wait(1000).call(() => reset());
+                            demo4().wait(1500).call(() => reset());
                         });
                     });
                 }).setLoop(true);
