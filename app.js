@@ -35,7 +35,7 @@ phina.define('TitleScene', {
         this.backgroundColor = "#689F38";
 
         // Label({
-        //     text: 'ほとんど考えずにできる',
+        //     text: '',
         //     x: this.gridX.center(),
         //     y: this.gridY.span(2),
         //     fontSize: 25,
@@ -44,7 +44,7 @@ phina.define('TitleScene', {
         // }).addChildTo(this);
 
         Label({
-            text: 'FIRE FIGHT',
+            text: 'FIRE  FIGHT',
             x: this.gridX.center(),
             y: this.gridY.span(3),
             fontSize:80,
@@ -176,8 +176,8 @@ phina.define("FieldMap", {
         });
 
         // 火をつける。
-        [...Array(70)].map(() => self.putFire());
-        // [...Array(1)].map(() => self.putFire());
+        // [...Array(70)].map(() => self.putFire());
+        [...Array(1)].map(() => self.putFire());
         gameStart = true;
         startTime = new Date();
 
@@ -577,7 +577,9 @@ function gameClear() {
             fontSize: 30,
             fontWeight: 800,
             fill: "black",
-        }).addChildTo(scene)
+            stroke: "white",
+            strokeWidth: 5,
+    }).addChildTo(scene)
         .setPosition(scene.gridX.center(), scene.gridY.center() + 100);
 
         scene.on("pointstart", function() {
