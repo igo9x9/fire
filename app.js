@@ -176,8 +176,8 @@ phina.define("FieldMap", {
         });
 
         // 火をつける。
-        // [...Array(70)].map(() => self.putFire());
-        [...Array(1)].map(() => self.putFire());
+        [...Array(70)].map(() => self.putFire());
+        // [...Array(1)].map(() => self.putFire());
         gameStart = true;
         startTime = new Date();
 
