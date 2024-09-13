@@ -44,15 +44,17 @@ phina.define('TitleScene', {
         // }).addChildTo(this);
 
         Label({
-            text: '火消しゲーム',
+            text: 'FIRE FIGHT',
             x: this.gridX.center(),
             y: this.gridY.span(3),
             fontSize:80,
-            fill: "#81D4FA",
+            // fill: "#81D4FA",
+            fill: "RED",
             fontWeight: 800,
             strokeWidth: 20,
+            // stroke: "white",
             stroke: "white",
-         }).addChildTo(this);
+        }).addChildTo(this);
 
         // const verLabel = Label({
         //     x: this.gridX.span(12),
@@ -66,7 +68,7 @@ phina.define('TitleScene', {
         Demo().addChildTo(this).setPosition(this.gridX.center(), this.gridY.span(8));
 
         Label({
-            text: 'タップして開始',
+            text: 'Tap to start',
             x: this.gridX.center(),
             y: this.gridY.span(13),
             fontSize: 30,
@@ -78,7 +80,7 @@ phina.define('TitleScene', {
 
         if (best) {
             Label({
-                text: "自己ベスト " + best + " 秒",
+                text: "Best " + best + " sec",
                 x: this.gridX.center(),
                 y: this.gridY.span(14),
                 fontSize: 40,
@@ -151,7 +153,7 @@ phina.define("FieldMap", {
     init: function(options) {
 
         this.superInit({
-            width: 576,
+            width: 512,
             height: 832,
             fill: "#ecf0f1",
             strokeWidth: 10,
@@ -161,7 +163,7 @@ phina.define("FieldMap", {
 
         const self = this;
 
-        self.gridX = Grid({width: 576, columns: 9});
+        self.gridX = Grid({width: 512, columns: 8});
         self.gridY = Grid({width: 832, columns: 13});
  
         self.blocks = [];
@@ -170,7 +172,7 @@ phina.define("FieldMap", {
         [...Array(14)].map(() => self.blocks.push([]));
     
         self.blocks.forEach((block, y) => {
-            [...Array(10)].map((_, x) => block.push(Block(x, y)));
+            [...Array(9)].map((_, x) => block.push(Block(x, y)));
         });
 
         self.blocks.forEach((rows, y) => {
@@ -180,7 +182,7 @@ phina.define("FieldMap", {
         });
 
         // 火をつける。
-        [...Array(80)].map(() => self.putFire());
+        [...Array(70)].map(() => self.putFire());
         // [...Array(1)].map(() => self.putFire());
         gameStart = true;
         startTime = new Date();
@@ -193,7 +195,7 @@ phina.define("FieldMap", {
     },
     getBlock: function(x, y) {
         const self = this;
-        if (x < 0 || x > 10 || y < 0 || y > 14) {
+        if (x < 0 || x > 9 || y < 0 || y > 14) {
             return null;
         }
         return self.blocks[y][x];
@@ -229,7 +231,7 @@ phina.define("FieldMap", {
 
     getRightBlock: function(block) {
         const x = block.px + 1;
-        if (x > 13) return null;
+        if (x > 8) return null;
         return this.getBlock(x, block.py);
     },
 
@@ -444,9 +446,12 @@ phina.define('Block', {
         this.type = TYPE_GROUND;
         this.step = 0;
         if (isSelf) {
-            const smoke = Sprite("smoke2").addChildTo(this).setPosition(0, 0);
-            smoke.alpha = 0.9;
-            smoke.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 1000).call(() => smoke.remove()).play();
+            const smoke1 = Sprite("smoke2").addChildTo(this).setPosition(0, 5);
+            smoke1.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke1.remove()).play();
+            const smoke2 = Sprite("smoke2").addChildTo(this).setPosition(-5, 0);
+            smoke2.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke2.remove()).play();
+            const smoke3 = Sprite("smoke2").addChildTo(this).setPosition(5, 0);
+            smoke3.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke3.remove()).play();
         } else {
             const smoke = Sprite("smoke").addChildTo(this).setPosition(0, 0);
             smoke.alpha = 0.9;
@@ -549,8 +554,8 @@ phina.define("ClearScene", {
         .to({x: self.gridX.center() + 800}, 200, "easeOutQuad")
         .call(function() {
             Label({
-                text: time + " 秒",
-                fontSize: 100,
+                text: time + " sec",
+                fontSize: 80,
                 fontWeight: 800,
                 fill: "white",
                 stroke: "black",
@@ -561,8 +566,8 @@ phina.define("ClearScene", {
             const bestTime = window.localStorage.getItem("best");
             if (!bestTime || bestTime > time) {
                 Label({
-                    text: "自己ベスト！",
-                    fontSize: 80,
+                    text: "New record !",
+                    fontSize: 60,
                     fontWeight: 800,
                     fill: "white",
                     stroke: "red",
