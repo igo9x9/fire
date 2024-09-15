@@ -18,7 +18,6 @@ ASSETS = {
         "fire5": "img/fire5.png",
     },
     font: {
-        "bit": "font/8-BITWONDER.ttf",
         "prstartk": "font/prstartk.ttf",
     },
 };
