@@ -28,8 +28,7 @@ const TYPE_FIRE = "1";
 const TYPE_WATER = "2";
 const TYPE_GROUND = "3";
 
-// const FIRE_START_COUNT = 70;
-const FIRE_START_COUNT = 2;
+const FIRE_START_COUNT = 70;
 let fireCount;
 
 phina.define('TitleScene', {
@@ -43,17 +42,17 @@ phina.define('TitleScene', {
         this.backgroundColor = "#689F38";
 
         Label({
-            text: 'FIRE  FIGHT',
+            text: ' FIRE FIGHT ',
             x: this.gridX.center(),
             y: this.gridY.span(3),
-            fontSize: 60,
+            fontSize: 50,
             // fill: "#81D4FA",
             fill: "RED",
             fontWeight: 800,
             strokeWidth: 20,
             // stroke: "white",
             stroke: "white",
-            fontFamily: "'bit'",
+            fontFamily: "'prstartk'",
         }).addChildTo(this);
 
         Demo().addChildTo(this).setPosition(this.gridX.center(), this.gridY.span(8));
