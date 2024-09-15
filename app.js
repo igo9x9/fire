@@ -17,6 +17,10 @@ ASSETS = {
         "fire4": "img/fire4.png",
         "fire5": "img/fire5.png",
     },
+    font: {
+        "bit": "font/8-BIT-WONDER.ttf",
+        "prstartk": "font/prstartk.ttf",
+    },
 };
 
 const TYPE_GREEN = "0";
@@ -24,7 +28,8 @@ const TYPE_FIRE = "1";
 const TYPE_WATER = "2";
 const TYPE_GROUND = "3";
 
-const FIRE_START_COUNT = 70;
+// const FIRE_START_COUNT = 70;
+const FIRE_START_COUNT = 2;
 let fireCount;
 
 phina.define('TitleScene', {
@@ -37,36 +42,19 @@ phina.define('TitleScene', {
 
         this.backgroundColor = "#689F38";
 
-        // Label({
-        //     text: '',
-        //     x: this.gridX.center(),
-        //     y: this.gridY.span(2),
-        //     fontSize: 25,
-        //     fill: "black",
-        //     fontWeight: 800,
-        // }).addChildTo(this);
-
         Label({
             text: 'FIRE  FIGHT',
             x: this.gridX.center(),
             y: this.gridY.span(3),
-            fontSize:80,
+            fontSize: 60,
             // fill: "#81D4FA",
             fill: "RED",
             fontWeight: 800,
             strokeWidth: 20,
             // stroke: "white",
             stroke: "white",
+            fontFamily: "'bit'",
         }).addChildTo(this);
-
-        // const verLabel = Label({
-        //     x: this.gridX.span(12),
-        //     y: this.gridY.span(4),
-        //     fontSize: 18,
-        //     fill: "black",
-        //     fontFamily: "monospace",
-        // }).addChildTo(this);
-        // verLabel.text = "version " + version;
 
         Demo().addChildTo(this).setPosition(this.gridX.center(), this.gridY.span(8));
 
@@ -77,6 +65,7 @@ phina.define('TitleScene', {
             fontSize: 30,
             fill: "white",
             fontWeight: 800,
+            fontFamily: "'prstartk'",
         }).addChildTo(this);
 
         const best = window.localStorage.getItem("best");
@@ -91,7 +80,8 @@ phina.define('TitleScene', {
                 fontWeight: 800,
                 strokeWidth: 5,
                 stroke: "white",
-                }).addChildTo(this);
+                fontFamily: "'prstartk'",
+            }).addChildTo(this);
             }
 
         this.on("pointstart",function() {
@@ -559,11 +549,12 @@ function gameClear() {
 
     Label({
         text: "CLEAR !",
-        fontSize: 100,
+        fontSize: 60,
         fontWeight: 800,
         fill: "white",
         stroke: "red",
         strokeWidth: 20,
+        fontFamily: "'prstartk'",
     }).addChildTo(scene)
     .setPosition(-700, scene.gridY.center())
     .tweener.to({x: scene.gridX.center()}, 400, "easeOutExpo")
@@ -572,23 +563,25 @@ function gameClear() {
     .call(function() {
         Label({
             text: time + " sec",
-            fontSize: 80,
+            fontSize: 50,
             fontWeight: 800,
             fill: "white",
             stroke: "black",
             strokeWidth: 20,
+            fontFamily: "'prstartk'",
         }).addChildTo(scene)
         .setPosition(scene.gridX.center(), scene.gridY.center());
 
         const bestTime = window.localStorage.getItem("best");
         if (!bestTime || bestTime > time) {
             Label({
-                text: "New record !",
-                fontSize: 60,
+                text: "New record",
+                fontSize: 50,
                 fontWeight: 800,
                 fill: "white",
                 stroke: "red",
                 strokeWidth: 20,
+                fontFamily: "'prstartk'",
             }).addChildTo(scene)
             .setPosition(scene.gridX.center(), scene.gridY.center() - 120);
             window.localStorage.setItem("best", time);
@@ -605,6 +598,7 @@ function gameClear() {
             fill: "black",
             stroke: "white",
             strokeWidth: 5,
+            fontFamily: "'prstartk'",
     }).addChildTo(scene)
         .setPosition(scene.gridX.center(), scene.gridY.center() + 100);
 
