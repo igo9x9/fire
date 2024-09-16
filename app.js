@@ -11,6 +11,7 @@ ASSETS = {
         "water3": "img/water3.png",
         "smoke": "img/smoke.png",
         "smoke2": "img/smoke2.png",
+        "smoke3": "img/smoke3.png",
         "fire1": "img/fire1.png",
         "fire2": "img/fire2.png",
         "fire3": "img/fire3.png",
@@ -40,26 +41,41 @@ phina.define('TitleScene', {
 
         this.backgroundColor = "#689F38";
 
+        const titleFillColor = "red";
+        const titleStrokeColor = "yellow";
+
         Label({
-            text: ' FIRE FIGHT ',
+            text: ' FIRE ',
             x: this.gridX.center(),
-            y: this.gridY.span(3),
-            fontSize: 50,
+            y: this.gridY.span(2),
+            fontSize: 100,
             // fill: "#81D4FA",
-            fill: "RED",
-            fontWeight: 800,
-            strokeWidth: 20,
+            fill: titleFillColor,
+            strokeWidth: 10,
             // stroke: "white",
-            stroke: "white",
+            stroke: titleStrokeColor,
             fontFamily: "'prstartk'",
         }).addChildTo(this);
 
-        Demo().addChildTo(this).setPosition(this.gridX.center(), this.gridY.span(8));
+        Label({
+            text: ' FIGHT ',
+            x: this.gridX.center(),
+            y: this.gridY.span(4),
+            fontSize: 100,
+            // fill: "#81D4FA",
+            fill: titleFillColor,
+            strokeWidth: 10,
+            // stroke: "white",
+            stroke: titleStrokeColor,
+            fontFamily: "'prstartk'",
+        }).addChildTo(this);
+
+        Demo().addChildTo(this).setPosition(this.gridX.center(), this.gridY.span(9));
 
         Label({
             text: 'Tap to start',
             x: this.gridX.center(),
-            y: this.gridY.span(13),
+            y: this.gridY.span(14),
             fontSize: 30,
             fill: "white",
             fontWeight: 800,
@@ -72,8 +88,8 @@ phina.define('TitleScene', {
             Label({
                 text: "Best " + best + " sec",
                 x: this.gridX.center(),
-                y: this.gridY.span(14),
-                fontSize: 40,
+                y: this.gridY.span(15),
+                fontSize: 30,
                 fill: "red",
                 fontWeight: 800,
                 strokeWidth: 5,
@@ -104,14 +120,14 @@ phina.define('GameScene', {
         const fieldMap = FieldMap().addChildTo(self).setPosition(this.gridX.center(), this.gridY.center());
 
         this.on("pointstart", function(e) {
-            putWater(e);
+            putWater(e, true);
         });
 
         this.on("pointmove", function(e) {
             putWater(e);
         });
 
-        function putWater(e) {
+        function putWater(e, isTap) {
             if (gameStart === false) {
                 return;
             }
@@ -122,6 +138,10 @@ phina.define('GameScene', {
                         if (block.type === TYPE_GREEN || block.type === TYPE_GROUND) {
                             block.changeToWater();
                             fieldMap.checkAllBlocks();
+                        }
+                        // 火なら
+                        if (isTap && block.type === TYPE_FIRE) {
+                            block.changeToWaterFromFire();
                         }
                     }
                 });
@@ -172,32 +192,32 @@ phina.define("FieldMap", {
         gameStart = true;
         startTime = new Date();
 
-        function removeFireLoop() {
-            self.removeFireRandom();
-            self.checkAllBlocks();
+        // function removeFireLoop() {
+        //     self.removeFireRandom();
+        //     self.checkAllBlocks();
 
-            let timeout;
-            if (fireCount / FIRE_START_COUNT > 0.7) {
-                timeout = 3000;
-            } else if (fireCount / FIRE_START_COUNT > 0.3) {
-                timeout = 2500;
-            } else {
-                timeout = 2000;
-            }
+        //     let timeout;
+        //     if (fireCount / FIRE_START_COUNT > 0.7) {
+        //         timeout = 3000;
+        //     } else if (fireCount / FIRE_START_COUNT > 0.3) {
+        //         timeout = 2500;
+        //     } else {
+        //         timeout = 2000;
+        //     }
 
-            if (gameStart === false) {
-                return;
-            }
+        //     if (gameStart === false) {
+        //         return;
+        //     }
 
-            timeoutID = setTimeout(() => {
-                removeFireLoop();
-            }, timeout);
+        //     timeoutID = setTimeout(() => {
+        //         removeFireLoop();
+        //     }, timeout);
 
-        }
+        // }
 
-        timeoutID = setTimeout(() => {
-            removeFireLoop();
-        }, 4000);
+        // timeoutID = setTimeout(() => {
+        //     removeFireLoop();
+        // }, 4000);
         
     },
     getBlock: function(x, y) {
@@ -421,6 +441,7 @@ phina.define('Block', {
         self.py = y;
         self.checked = false;
         self.step = 0;
+        self.step2 = 0;
         self.counter = 0;
     },
 
@@ -449,7 +470,7 @@ phina.define('Block', {
 
     changeToGroundFromFire: function(isSelf) {
         if (this.type === TYPE_GROUND) return;
-        this.setImage("fire2");
+        this.setImage("ground");
         this.lastType = this.type;
         this.type = TYPE_GROUND;
         this.step = 0;
@@ -464,7 +485,16 @@ phina.define('Block', {
         } else {
             const smoke = Sprite("smoke").addChildTo(this).setPosition(0, 0);
             smoke.alpha = 0.9;
-            smoke.tweener.to({y: -30, alpha: 0, scaleX: 2}, 500).call(() => smoke.remove()).play();
+            smoke.tweener.to({y: -30, alpha: 0, scaleX: 2}, 500).call(() => {
+                smoke.remove();
+            }).play();
+            const smoke1 = Sprite("smoke2").addChildTo(this).setPosition(0, 0);
+            smoke1.alpha = 0.4;
+            smoke1.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 1000).call(() => smoke1.remove()).play();
+            // const smoke2 = Sprite("smoke2").addChildTo(this).setPosition(-5, 0);
+            // smoke2.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke2.remove()).play();
+            // const smoke3 = Sprite("smoke2").addChildTo(this).setPosition(5, 0);
+            // smoke3.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke3.remove()).play();
         }
     },
 
@@ -476,6 +506,41 @@ phina.define('Block', {
         this.step = 0;
     },
 
+    changeToWaterFromFire: function() {
+        // 一瞬だけ水を表示
+        this.setImage("water");
+
+        if (this.step2 <= 2) {
+            // nothing
+        } else if (this.step2 <= 5) {
+            this.step = 99;
+            setTimeout(() => {
+                const smoke = Sprite("smoke3").addChildTo(this);
+                smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
+                this.setImage("fire2");
+            }, 10);
+        } else if (this.step2 <= 8) {
+            setTimeout(() => {
+                const smoke = Sprite("smoke3").addChildTo(this);
+                smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
+                this.setImage("fire1");
+            }, 10);
+        } else {
+            this.setImage("water");
+            this.type = TYPE_WATER;
+            this.step = 0;
+            this.step2 = 0;
+
+            const smoke1 = Sprite("smoke2").addChildTo(this).setPosition(0, 10);
+            smoke1.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke1.remove()).play();
+            const smoke2 = Sprite("smoke2").addChildTo(this).setPosition(-10, 0);
+            smoke2.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke2.remove()).play();
+            const smoke3 = Sprite("smoke2").addChildTo(this).setPosition(10, 0);
+            smoke3.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke3.remove()).play();
+        }
+        this.step2 += 1;
+    },
+
     update: function() {
 
         self.counter += 1;
@@ -484,7 +549,19 @@ phina.define('Block', {
         }
         self.counter = 0;
 
+        // if (this.type === TYPE_FIRE && this.step2 > 0) {
+        //     this.setImage("fire3");
+        //     this.step = 0;
+        //     this.step2 = 0;
+        //     return;
+        // }
         if (this.type === TYPE_FIRE) {
+
+            if (this.step2 > 0 && this._image.src === "img/water.png") {
+                const smoke = Sprite("smoke3").addChildTo(this);
+                smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
+            }
+
             if (this.step === 0) {
                 this.step = 1;
             } else if (this.step === 1) {
@@ -510,14 +587,14 @@ phina.define('Block', {
         }
 
         if (this.type === TYPE_GROUND) {
-            if (this.lastType === TYPE_FIRE) {
-                if (this.step === 0) {
-                    this.setImage("fire1");
-                    this.step = 1;
-                } else {
-                    this.setImage("ground");
-                }
-            }
+            // if (this.lastType === TYPE_FIRE) {
+            //     if (this.step === 0) {
+            //         this.setImage("fire1");
+            //         this.step = 1;
+            //     } else {
+            //         this.setImage("ground");
+            //     }
+            // }
             return;
         }
 
