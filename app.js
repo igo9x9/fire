@@ -142,6 +142,7 @@ phina.define('GameScene', {
                         // 火なら
                         if (isTap && block.type === TYPE_FIRE) {
                             block.changeToWaterFromFire();
+                            fieldMap.checkAllBlocks();
                         }
                     }
                 });
