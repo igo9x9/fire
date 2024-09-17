@@ -42,31 +42,71 @@ phina.define('TitleScene', {
         this.backgroundColor = "#689F38";
 
         const titleFillColor = "red";
-        const titleStrokeColor = "yellow";
+        const titleStrokeColor = "black";
 
         Label({
-            text: ' FIRE ',
-            x: this.gridX.center(),
-            y: this.gridY.span(2),
-            fontSize: 100,
-            // fill: "#81D4FA",
-            fill: titleFillColor,
-            strokeWidth: 10,
-            // stroke: "white",
-            stroke: titleStrokeColor,
+            text: ' WATER ',
+            x: this.gridX.center() + 10,
+            y: this.gridY.span(2) + 10,
+            fontSize: 80,
+            fill: "black",
+            strokeWidth: 20,
+            stroke: "black",
             fontFamily: "'prstartk'",
         }).addChildTo(this);
 
         Label({
-            text: ' FIGHT ',
+            text: ' WATER ',
+            x: this.gridX.center(),
+            y: this.gridY.span(2),
+            fontSize: 80,
+            fill: "skyblue",
+            strokeWidth: 20,
+            stroke: "black",
+            fontFamily: "'prstartk'",
+        }).addChildTo(this);
+
+        Label({
+            text: ' FIRE ',
+            x: this.gridX.center() + 10,
+            y: this.gridY.span(4) + 10,
+            fontSize: 80,
+            fill: "black",
+            strokeWidth: 20,
+            stroke: "black",
+            fontFamily: "'prstartk'",
+        }).addChildTo(this);
+
+        Label({
+            text: ' FIRE ',
             x: this.gridX.center(),
             y: this.gridY.span(4),
-            fontSize: 100,
-            // fill: "#81D4FA",
-            fill: titleFillColor,
-            strokeWidth: 10,
-            // stroke: "white",
-            stroke: titleStrokeColor,
+            fontSize: 80,
+            fill: "red",
+            strokeWidth: 20,
+            stroke: "black",
+            fontFamily: "'prstartk'",
+        }).addChildTo(this);
+
+        // Label({
+        //     text: ' & ',
+        //     x: this.gridX.center() + 10,
+        //     y: this.gridY.span(3.4) + 10,
+        //     fontSize: 80,
+        //     fill: "black",
+        //     strokeWidth: 20,
+        //     stroke: "black",
+        //     fontFamily: "'prstartk'",
+        // }).addChildTo(this);
+
+        Label({
+            text: ' VS ',
+            x: this.gridX.center(),
+            y: this.gridY.span(3),
+            fontSize: 60,
+            fill: "white",
+            strokeWidth: 20,
+            stroke: "black",
             fontFamily: "'prstartk'",
         }).addChildTo(this);
 
@@ -499,33 +539,29 @@ phina.define('Block', {
         }
     },
 
-    changeToFGreen: function() {
-        if (this.type === TYPE_GREEN) return;
-        this.setImage("green");
-        this.lastType = this.type;
-        this.type = TYPE_GREEN;
-        this.step = 0;
-    },
-
     changeToWaterFromFire: function() {
-        // 一瞬だけ水を表示
-        this.setImage("water");
 
-        if (this.step2 <= 2) {
-            // nothing
-        } else if (this.step2 <= 5) {
+        if (this.step2 <= 1) {
+            this.step = 99;
+            setTimeout(() => {
+                const smoke = Sprite("smoke3").addChildTo(this);
+                smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
+                this.setImage("fire3");
+                this.step = 0;
+            }, 100);
+        } else if (this.step2 <= 2) {
             this.step = 99;
             setTimeout(() => {
                 const smoke = Sprite("smoke3").addChildTo(this);
                 smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
                 this.setImage("fire2");
-            }, 10);
-        } else if (this.step2 <= 8) {
+            }, 100);
+        } else if (this.step2 <= 3) {
             setTimeout(() => {
                 const smoke = Sprite("smoke3").addChildTo(this);
                 smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
                 this.setImage("fire1");
-            }, 10);
+            }, 100);
         } else {
             this.setImage("water");
             this.type = TYPE_WATER;
@@ -556,12 +592,13 @@ phina.define('Block', {
         //     this.step2 = 0;
         //     return;
         // }
+
         if (this.type === TYPE_FIRE) {
 
-            if (this.step2 > 0 && this._image.src === "img/water.png") {
-                const smoke = Sprite("smoke3").addChildTo(this);
-                smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
-            }
+            // if (this.step2 > 0 && this._image.src === "img/water.png") {
+            //     const smoke = Sprite("smoke3").addChildTo(this);
+            //     smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
+            // }
 
             if (this.step === 0) {
                 this.step = 1;
@@ -756,6 +793,9 @@ phina.define("Demo", {
                     block.type = TYPE_GREEN;
                     block.lastType = TYPE_GREEN;
                     block.setImage("green");
+                    block.step = 0;
+                    block.step2 = 0;
+                    block.counter = 0;
                 });
             });
         }
@@ -883,11 +923,17 @@ phina.define("Demo", {
                 .wait(400)
                 .call(() => self.blocks[3][4].changeToGreenFromWater())
                 .wait(1200)
-                .call(() => self.blocks[2][2].changeToGroundFromFire(true))
+                .call(() => self.blocks[2][2].changeToWaterFromFire())
+                .wait(1000)
+                .call(() => self.blocks[2][2].changeToWaterFromFire())
+                .wait(1000)
+                .call(() => self.blocks[2][2].changeToWaterFromFire())
+                .wait(1000)
+                .call(() => self.blocks[2][2].changeToWaterFromFire())
+                .wait(1000)
+                .call(() => self.blocks[2][2].changeToWaterFromFire())
                 .wait(2000)
                 .call(() => self.blocks[3][2].changeToWater())
-                .wait(300)
-                .call(() => self.blocks[2][2].changeToWater())
                 .wait(600)
                 .call(() => self.blocks[3][4].changeToWater())
                 .wait(200)
@@ -918,7 +964,6 @@ phina.define("Demo", {
                 }).play();
             }).play();
         }).setLoop(true).play();
-
     },
 });
 
