@@ -28,7 +28,7 @@ const TYPE_FIRE = "1";
 const TYPE_WATER = "2";
 const TYPE_GROUND = "3";
 
-const FIRE_START_COUNT = 70;
+const FIRE_START_COUNT = 60;
 let fireCount;
 
 phina.define('TitleScene', {
@@ -87,17 +87,6 @@ phina.define('TitleScene', {
             stroke: "black",
             fontFamily: "'prstartk'",
         }).addChildTo(this);
-
-        // Label({
-        //     text: ' & ',
-        //     x: this.gridX.center() + 10,
-        //     y: this.gridY.span(3.4) + 10,
-        //     fontSize: 80,
-        //     fill: "black",
-        //     strokeWidth: 20,
-        //     stroke: "black",
-        //     fontFamily: "'prstartk'",
-        // }).addChildTo(this);
 
         Label({
             text: ' VS ',
@@ -532,17 +521,14 @@ phina.define('Block', {
             const smoke1 = Sprite("smoke2").addChildTo(this).setPosition(0, 0);
             smoke1.alpha = 0.4;
             smoke1.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 1000).call(() => smoke1.remove()).play();
-            // const smoke2 = Sprite("smoke2").addChildTo(this).setPosition(-5, 0);
-            // smoke2.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke2.remove()).play();
-            // const smoke3 = Sprite("smoke2").addChildTo(this).setPosition(5, 0);
-            // smoke3.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke3.remove()).play();
         }
     },
 
     changeToWaterFromFire: function() {
 
+        this.step = 99;
+
         if (this.step2 <= 1) {
-            this.step = 99;
             setTimeout(() => {
                 const smoke = Sprite("smoke3").addChildTo(this);
                 smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
@@ -550,7 +536,6 @@ phina.define('Block', {
                 this.step = 0;
             }, 100);
         } else if (this.step2 <= 2) {
-            this.step = 99;
             setTimeout(() => {
                 const smoke = Sprite("smoke3").addChildTo(this);
                 smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
@@ -586,19 +571,7 @@ phina.define('Block', {
         }
         self.counter = 0;
 
-        // if (this.type === TYPE_FIRE && this.step2 > 0) {
-        //     this.setImage("fire3");
-        //     this.step = 0;
-        //     this.step2 = 0;
-        //     return;
-        // }
-
         if (this.type === TYPE_FIRE) {
-
-            // if (this.step2 > 0 && this._image.src === "img/water.png") {
-            //     const smoke = Sprite("smoke3").addChildTo(this);
-            //     smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
-            // }
 
             if (this.step === 0) {
                 this.step = 1;
@@ -625,14 +598,6 @@ phina.define('Block', {
         }
 
         if (this.type === TYPE_GROUND) {
-            // if (this.lastType === TYPE_FIRE) {
-            //     if (this.step === 0) {
-            //         this.setImage("fire1");
-            //         this.step = 1;
-            //     } else {
-            //         this.setImage("ground");
-            //     }
-            // }
             return;
         }
 
@@ -811,20 +776,6 @@ phina.define("Demo", {
                 .wait(300).call(() => self.blocks[3][2].changeToWater())
                 .wait(600).call(() => self.blocks[3][3].changeToGroundFromFire());
         }
-
-        // function demo2() {
-        //     return self.tweener
-        //         .call(() => {
-        //             self.blocks[2][3].changeToFire();
-        //             self.blocks[3][4].changeToFire();
-        //             self.blocks[4][3].changeToFire();
-        //             self.blocks[3][2].changeToFire();
-        //         })
-        //         .wait(800).call(() => self.blocks[3][3].changeToWater())
-        //         .wait(800).call(() => self.blocks[3][3].changeToGreenFromWater())
-        //         .wait(1600).call(() => self.blocks[3][3].changeToWater())
-        //         .wait(800).call(() => self.blocks[3][3].changeToGreenFromWater());
-        // }
 
         function demo2() {
             return self.tweener
