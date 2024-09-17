@@ -462,7 +462,7 @@ phina.define('Block', {
     superClass: 'Sprite',
 
     type: TYPE_GREEN,
-    lastType: TYPE_GREEN,
+    // lastType: TYPE_GREEN,
 
     init: function(x, y) {
         const self = this;
@@ -478,22 +478,30 @@ phina.define('Block', {
     changeToWater: function() {
         if (this.type === TYPE_WATER) return;
         this.setImage("water");
-        this.lastType = this.type;
+        // this.lastType = this.type;
         this.type = TYPE_WATER;
         this.step = 0;
     },
 
     changeToGreenFromWater: function() {
         this.setImage("water2");
-        this.lastType = this.type;
         this.type = TYPE_GREEN;
-        this.step = 0;
+        this.step = 2;
+        // this.lastType = this.type;
+        setTimeout(() => {
+            this.setImage("water3");
+            this.step = 3;
+            setTimeout(() => {
+                this.setImage("green");
+                this.step = 0;
+            }, 200);
+        }, 200);
     },
 
     changeToFire: function() {
         if (this.type === TYPE_FIRE) return;
         this.setImage("fire3");
-        this.lastType = this.type;
+        // this.lastType = this.type;
         this.type = TYPE_FIRE;
         this.step = 0;
     },
@@ -501,7 +509,7 @@ phina.define('Block', {
     changeToGroundFromFire: function(isSelf) {
         if (this.type === TYPE_GROUND) return;
         this.setImage("ground");
-        this.lastType = this.type;
+        // this.lastType = this.type;
         this.type = TYPE_GROUND;
         this.step = 0;
         fireCount = fireCount - 1;
@@ -600,24 +608,29 @@ phina.define('Block', {
         }
 
         if (this.type === TYPE_GROUND) {
+            if (this._image.src !== "src/ground.png") {
+                this.setImage("ground");
+            }
             return;
         }
 
         if (this.type === TYPE_WATER) {
-            if (this._image.src !== "src/water.png") {
+            if (this.step === 0 && this._image.src !== "src/water.png") {
                 this.setImage("water");
+            } else if (this.step === 2 && this._image.src !== "src/water2.png") {
+                this.setImage("water2");
+            } else if (this.step === 3 && this._image.src !== "src/water3.png") {
+                this.setImage("water3");
             }
             return;
         }
 
         if (this.type === TYPE_GREEN) {
-            if (this.lastType === TYPE_WATER) {
-                if (this.step === 0) {
-                    this.setImage("water3");
-                    this.step = 1;
-                } else {
-                    this.setImage("green");
-                }
+            if (this.step > 0) {
+                return;
+            }
+            if (this._image.src !== "src/green.png") {
+                this.setImage("green");
             }
             return;
         }
@@ -765,7 +778,7 @@ phina.define("Demo", {
             self.blocks.forEach((rows) => {
                 rows.forEach((block) => {
                     block.type = TYPE_GREEN;
-                    block.lastType = TYPE_GREEN;
+                    // block.lastType = TYPE_GREEN;
                     block.setImage("green");
                     block.step = 0;
                     block.step2 = 0;
