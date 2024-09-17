@@ -559,6 +559,8 @@ phina.define('Block', {
             smoke2.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke2.remove()).play();
             const smoke3 = Sprite("smoke2").addChildTo(this).setPosition(10, 0);
             smoke3.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke3.remove()).play();
+
+            return;
         }
         this.step2 += 1;
     },
@@ -598,6 +600,13 @@ phina.define('Block', {
         }
 
         if (this.type === TYPE_GROUND) {
+            return;
+        }
+
+        if (this.type === TYPE_WATER) {
+            if (this._image.src !== "src/water.png") {
+                this.setImage("water");
+            }
             return;
         }
 
