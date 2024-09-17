@@ -89,10 +89,10 @@ phina.define('TitleScene', {
         }).addChildTo(this);
 
         Label({
-            text: ' VS ',
+            text: ' and ',
             x: this.gridX.center(),
-            y: this.gridY.span(3),
-            fontSize: 60,
+            y: this.gridY.span(2.9),
+            fontSize: 40,
             fill: "white",
             strokeWidth: 20,
             stroke: "black",
@@ -648,8 +648,8 @@ function gameClear() {
     time = Math.floor(((new Date()).getTime() - startTime.getTime()) / 100) / 10;
 
     Label({
-        text: "CLEAR !",
-        fontSize: 60,
+        text: "CLEAR",
+        fontSize: 80,
         fontWeight: 800,
         fill: "white",
         stroke: "red",
@@ -658,7 +658,7 @@ function gameClear() {
     }).addChildTo(scene)
     .setPosition(-700, scene.gridY.center())
     .tweener.to({x: scene.gridX.center()}, 400, "easeOutExpo")
-    .wait(500)
+    .wait(600)
     .to({x: scene.gridX.center() + 800}, 200, "easeOutQuad")
     .call(function() {
         Label({
