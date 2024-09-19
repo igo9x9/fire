@@ -31,6 +31,7 @@ const TYPE_WATER = "2";
 const TYPE_GROUND = "3";
 
 const FIRE_START_COUNT = 60;
+// const FIRE_START_COUNT = 1;
 let fireCount;
 
 phina.define('TitleScene', {
@@ -635,13 +636,21 @@ function gameClear() {
 
     time = Math.floor(((new Date()).getTime() - startTime.getTime()) / 100) / 10;
 
+    const back = RectangleShape({
+        fill: "black",
+        width: scene.width,
+        height: scene.height,
+    }).setPosition(scene.gridX.center(), scene.gridY.center()).addChildTo(scene);
+    back.alpha = 0.1;
+    back.tweener.to({alpha: 0.4}, 200);
+
     Label({
         text: "CLEAR",
-        fontSize: 80,
+        fontSize: 90,
         fontWeight: 800,
-        fill: "white",
-        stroke: "red",
-        strokeWidth: 20,
+        fill: "red",
+        stroke: "white",
+        strokeWidth: 10,
         fontFamily: "'prstartk'",
     }).addChildTo(scene)
     .setPosition(-700, scene.gridY.center())
