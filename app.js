@@ -14,6 +14,8 @@ ASSETS = {
         "smoke3": "img/smoke3.png",
         "fire1": "img/fire1.png",
         "fire2": "img/fire2.png",
+        "fire1-1": "img/fire1-1.png",
+        "fire2-1": "img/fire2-1.png",
         "fire3": "img/fire3.png",
         "fire4": "img/fire4.png",
         "fire5": "img/fire5.png",
@@ -549,26 +551,46 @@ phina.define('Block', {
 
         if (this.type === TYPE_FIRE) {
 
-            if (this.step === 0) {
-                this.step = 1;
-            } else if (this.step === 1) {
-                this.setImage("fire4");
-                this.step = 2;
-            } else if (this.step === 2) {
-                this.step = 3;
-            } else if (this.step === 3) {
-                this.setImage("fire3");
-                this.step = 4;
-            } else if (this.step === 4) {
-                this.step = 5;
-            } else if (this.step === 5) {
-                this.setImage("fire5");
-                this.step = 6;
-            } else if (this.step === 6) {
-                this.step = 7;
-            } else if (this.step === 7) {
-                this.setImage("fire3");
-                this.step = 0;
+            if (this.step2 <= 2) {
+
+                if (this.step === 0) {
+                    this.step = 1;
+                } else if (this.step === 1) {
+                    this.setImage("fire4");
+                    this.step = 2;
+                } else if (this.step === 2) {
+                    this.step = 3;
+                } else if (this.step === 3) {
+                    this.setImage("fire3");
+                    this.step = 4;
+                } else if (this.step === 4) {
+                    this.step = 5;
+                } else if (this.step === 5) {
+                    this.setImage("fire5");
+                    this.step = 6;
+                } else if (this.step === 6) {
+                    this.step = 7;
+                } else if (this.step === 7) {
+                    this.setImage("fire3");
+                    this.step = 0;
+                }
+            } else if (this.step2 <= 3) {
+                if (this.step === 0) {
+                    this.setImage("fire2-1");
+                    this.step = 1;
+                } else {
+                    this.setImage("fire2");
+                    this.step = 0;
+                }
+
+            } else if (this.step2 <= 4) {
+                if (this.step === 0) {
+                    this.setImage("fire1-1");
+                    this.step = 1;
+                } else {
+                    this.setImage("fire1");
+                    this.step = 0;
+                }
             }
             return;
         }
