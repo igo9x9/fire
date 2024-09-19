@@ -117,7 +117,7 @@ phina.define('TitleScene', {
             Label({
                 text: "Best " + best + " sec",
                 x: this.gridX.center(),
-                y: this.gridY.span(15),
+                y: this.gridY.span(13),
                 fontSize: 30,
                 fill: "red",
                 fontWeight: 800,
@@ -222,33 +222,6 @@ phina.define("FieldMap", {
         gameStart = true;
         startTime = new Date();
 
-        // function removeFireLoop() {
-        //     self.removeFireRandom();
-        //     self.checkAllBlocks();
-
-        //     let timeout;
-        //     if (fireCount / FIRE_START_COUNT > 0.7) {
-        //         timeout = 3000;
-        //     } else if (fireCount / FIRE_START_COUNT > 0.3) {
-        //         timeout = 2500;
-        //     } else {
-        //         timeout = 2000;
-        //     }
-
-        //     if (gameStart === false) {
-        //         return;
-        //     }
-
-        //     timeoutID = setTimeout(() => {
-        //         removeFireLoop();
-        //     }, timeout);
-
-        // }
-
-        // timeoutID = setTimeout(() => {
-        //     removeFireLoop();
-        // }, 4000);
-        
     },
     getBlock: function(x, y) {
         const self = this;
@@ -446,16 +419,6 @@ phina.define("FieldMap", {
 
     },
 
-    removeFireRandom: function() {
-        const self = this;
-        const fireBlocks = self.getBlocks(TYPE_FIRE);
-        if (fireBlocks.length === 0) {
-            return;
-        }
-        util.shuffleArray(fireBlocks);
-        fireBlocks[0].changeToGroundFromFire(true);
-    },
-
 });
 
 phina.define('Block', {
@@ -475,15 +438,30 @@ phina.define('Block', {
         self.counter = 0;
     },
 
-    changeToWater: function() {
+    changeToWater: function(noAnimation) {
         if (this.type === TYPE_WATER) return;
-        this.setImage("water");
-        // this.lastType = this.type;
+        if (noAnimation) {
+            this.step = 0;
+            this.setImage("water");
+        } else {
+            this.step = 2;
+            this.setImage("water2");
+            setTimeout(() => {
+                this.step = 0;
+                this.setImage("water");
+            }, 50);
+        }
         this.type = TYPE_WATER;
         this.step = 0;
     },
 
     changeToGreenFromWater: function() {
+        const smoke = Sprite("smoke").addChildTo(this).setPosition(0, 0);
+        smoke.alpha = 0.9;
+        smoke.tweener.to({y: -30, alpha: 0, scaleX: 2}, 500).call(() => {
+            smoke.remove();
+        }).play();
+
         this.setImage("water2");
         this.type = TYPE_GREEN;
         this.step = 2;
@@ -506,30 +484,21 @@ phina.define('Block', {
         this.step = 0;
     },
 
-    changeToGroundFromFire: function(isSelf) {
+    changeToGroundFromFire: function() {
         if (this.type === TYPE_GROUND) return;
         this.setImage("ground");
         // this.lastType = this.type;
         this.type = TYPE_GROUND;
         this.step = 0;
         fireCount = fireCount - 1;
-        if (isSelf) {
-            const smoke1 = Sprite("smoke2").addChildTo(this).setPosition(0, 5);
-            smoke1.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke1.remove()).play();
-            const smoke2 = Sprite("smoke2").addChildTo(this).setPosition(-5, 0);
-            smoke2.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke2.remove()).play();
-            const smoke3 = Sprite("smoke2").addChildTo(this).setPosition(5, 0);
-            smoke3.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke3.remove()).play();
-        } else {
-            const smoke = Sprite("smoke").addChildTo(this).setPosition(0, 0);
-            smoke.alpha = 0.9;
-            smoke.tweener.to({y: -30, alpha: 0, scaleX: 2}, 500).call(() => {
-                smoke.remove();
-            }).play();
-            const smoke1 = Sprite("smoke2").addChildTo(this).setPosition(0, 0);
-            smoke1.alpha = 0.4;
-            smoke1.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 1000).call(() => smoke1.remove()).play();
-        }
+        const smoke = Sprite("smoke").addChildTo(this).setPosition(0, 0);
+        smoke.alpha = 0.9;
+        smoke.tweener.to({y: -30, alpha: 0, scaleX: 2}, 500).call(() => {
+            smoke.remove();
+        }).play();
+        const smoke1 = Sprite("smoke2").addChildTo(this).setPosition(0, 0);
+        smoke1.alpha = 0.4;
+        smoke1.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 1000).call(() => smoke1.remove()).play();
     },
 
     changeToWaterFromFire: function() {
@@ -539,20 +508,20 @@ phina.define('Block', {
         if (this.step2 <= 1) {
             setTimeout(() => {
                 const smoke = Sprite("smoke3").addChildTo(this);
-                smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
+                smoke.tweener.to({y: -20, alpha: 0, scaleX: 2, scaleY: 2, rotation: 10}, 1000).call(() => smoke.remove()).play();
                 this.setImage("fire3");
                 this.step = 0;
             }, 100);
         } else if (this.step2 <= 2) {
             setTimeout(() => {
                 const smoke = Sprite("smoke3").addChildTo(this);
-                smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
+                smoke.tweener.to({y: -15, alpha: 0, scaleX: 1.5, scaleY: 1.5, rotation: -10}, 1000).call(() => smoke.remove()).play();
                 this.setImage("fire2");
             }, 100);
         } else if (this.step2 <= 3) {
             setTimeout(() => {
                 const smoke = Sprite("smoke3").addChildTo(this);
-                smoke.tweener.to({y: -20, alpha: 0}, 1000).call(() => smoke.remove()).play();
+                smoke.tweener.to({y: -10, alpha: 0, scaleX: 1, scaleY: 1, rotation: 5}, 1000).call(() => smoke.remove()).play();
                 this.setImage("fire1");
             }, 100);
         } else {
@@ -561,13 +530,10 @@ phina.define('Block', {
             this.step = 0;
             this.step2 = 0;
 
-            const smoke1 = Sprite("smoke2").addChildTo(this).setPosition(0, 10);
-            smoke1.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke1.remove()).play();
-            const smoke2 = Sprite("smoke2").addChildTo(this).setPosition(-10, 0);
-            smoke2.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke2.remove()).play();
-            const smoke3 = Sprite("smoke2").addChildTo(this).setPosition(10, 0);
-            smoke3.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 2000).call(() => smoke3.remove()).play();
-
+            const smoke1 = Sprite("smoke2").addChildTo(this).setPosition(0, 0);
+            smoke1.alpha = 0.4;
+            smoke1.tweener.to({alpha: 0, scaleX: 0.5, scaleY: 5}, 1000).call(() => smoke1.remove()).play();
+    
             return;
         }
         this.step2 += 1;
@@ -859,25 +825,25 @@ phina.define("Demo", {
                     self.blocks[2][1].changeToFire();
                     self.blocks[3][3].changeToFire();
 
-                    self.blocks[1][1].changeToWater();
-                    self.blocks[1][2].changeToWater();
-                    self.blocks[1][3].changeToWater();
-                    self.blocks[1][4].changeToWater();
-                    self.blocks[1][5].changeToWater();
+                    self.blocks[1][1].changeToWater(true);
+                    self.blocks[1][2].changeToWater(true);
+                    self.blocks[1][3].changeToWater(true);
+                    self.blocks[1][4].changeToWater(true);
+                    self.blocks[1][5].changeToWater(true);
 
-                    self.blocks[2][6].changeToWater();
-                    self.blocks[3][6].changeToWater();
-                    self.blocks[4][6].changeToWater();
+                    self.blocks[2][6].changeToWater(true);
+                    self.blocks[3][6].changeToWater(true);
+                    self.blocks[4][6].changeToWater(true);
 
-                    self.blocks[5][1].changeToWater();
-                    self.blocks[5][2].changeToWater();
-                    self.blocks[5][3].changeToWater();
-                    self.blocks[5][4].changeToWater();
-                    self.blocks[5][5].changeToWater();
+                    self.blocks[5][1].changeToWater(true);
+                    self.blocks[5][2].changeToWater(true);
+                    self.blocks[5][3].changeToWater(true);
+                    self.blocks[5][4].changeToWater(true);
+                    self.blocks[5][5].changeToWater(true);
 
-                    self.blocks[2][0].changeToWater();
-                    self.blocks[3][0].changeToWater();
-                    self.blocks[4][0].changeToWater();
+                    self.blocks[2][0].changeToWater(true);
+                    self.blocks[3][0].changeToWater(true);
+                    self.blocks[4][0].changeToWater(true);
                 })
                 .wait(600)
                 .call(() => self.blocks[3][2].changeToWater())
